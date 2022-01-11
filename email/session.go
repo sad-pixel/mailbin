@@ -19,8 +19,6 @@ func (s *Session) StoreEmail(r io.Reader) error {
 		return err
 	}
 
-	// log.Println(email.Subject)
-	// log.Println(email.From)
 	log.Println(email.To)
 	if err := s.Repository.Store(email); err != nil {
 		return err

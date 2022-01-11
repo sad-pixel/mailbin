@@ -1,6 +1,7 @@
 package email
 
 import (
+	"fmt"
 	"io"
 
 	"github.com/DusanKasan/parsemail"
@@ -41,4 +42,16 @@ func (e *EmailRepository) Store(mail parsemail.Email) error {
 
 	e.Messages = append(e.Messages, message)
 	return nil
+}
+
+func (e *EmailRepository) GetAll() *[]EmailMessage {
+	return &e.Messages
+}
+
+func (e *EmailRepository) GetOne(index int) (*EmailMessage, error) {
+	if index > len(e.Messages) || index < 0 {
+		return nil, fmt.Errorf("email index out of bounds")
+	}
+
+	return &e.Messages[index], nil
 }
