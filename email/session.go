@@ -6,11 +6,12 @@ import (
 
 	"github.com/DusanKasan/parsemail"
 	"github.com/emersion/go-smtp"
+	"github.com/sad-pixel/mailbin/repository"
 )
 
 // A Session is returned after EHLO.
 type Session struct {
-	Repository *EmailRepository
+	Repository *repository.EmailRepository
 }
 
 func (s *Session) StoreEmail(r io.Reader) error {

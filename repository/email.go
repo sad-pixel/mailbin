@@ -1,33 +1,38 @@
-package email
+package repository
 
 import (
 	"fmt"
 	"io"
+	"sync"
 
 	"github.com/DusanKasan/parsemail"
 )
 
-type EmailMessage struct {
+type Message struct {
 	Email       parsemail.Email
-	Attachments []EmailAttachment
+	Attachments []MessageAttachment
 }
 
-type EmailAttachment struct {
+type MessageAttachment struct {
 	Attachment parsemail.Attachment
 	File       []byte
 }
 
 type EmailRepository struct {
-	Messages []EmailMessage
+	mu       sync.Mutex
+	Messages []Message
 }
 
 func (e *EmailRepository) Store(mail parsemail.Email) error {
-	message := EmailMessage{
+	e.mu.Lock()
+	defer e.mu.Unlock()
+
+	message := Message{
 		Email: mail,
 	}
 
 	for _, attachment := range message.Email.Attachments {
-		a := EmailAttachment{
+		a := MessageAttachment{
 			Attachment: attachment,
 		}
 
@@ -35,8 +40,8 @@ func (e *EmailRepository) Store(mail parsemail.Email) error {
 		if err != nil {
 			return err
 		}
+
 		a.File = attachmentBytes
-		// log.Println("stored ", len(attachmentBytes), " bytes attachment")
 		message.Attachments = append(message.Attachments, a)
 	}
 
@@ -44,11 +49,17 @@ func (e *EmailRepository) Store(mail parsemail.Email) error {
 	return nil
 }
 
-func (e *EmailRepository) GetAll() *[]EmailMessage {
+func (e *EmailRepository) GetAll() *[]Message {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+
 	return &e.Messages
 }
 
-func (e *EmailRepository) GetOne(index int) (*EmailMessage, error) {
+func (e *EmailRepository) GetOne(index int) (*Message, error) {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+
 	if index > len(e.Messages) || index < 0 {
 		return nil, fmt.Errorf("email index out of bounds")
 	}

@@ -5,15 +5,16 @@ import (
 	"time"
 
 	"github.com/emersion/go-smtp"
+	"github.com/sad-pixel/mailbin/repository"
 )
 
 // The Backend implements SMTP server methods.
 type Backend struct {
-	Repository *EmailRepository
+	Repository *repository.EmailRepository
 }
 
 func (bkd *Backend) StartStats() {
-	go func(rp *EmailRepository) {
+	go func(rp *repository.EmailRepository) {
 		for {
 			log.Println("--- Stats ---")
 			log.Println("Emails held: ", len(rp.Messages))

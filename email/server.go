@@ -5,21 +5,31 @@ import (
 	"time"
 
 	"github.com/emersion/go-smtp"
+	"github.com/sad-pixel/mailbin/repository"
 )
 
-func ListenAndServe() error {
-	rp := new(EmailRepository)
-	be := &Backend{rp}
+type EmailSettings struct {
+	Port              string
+	Host              string
+	ReadTimeout       time.Duration
+	WriteTimeout      time.Duration
+	MaxMessageBytes   int
+	MaxRecipients     int
+	AllowInsecureAuth bool
+}
+
+func ListenAndServe(settings *EmailSettings, repo *repository.EmailRepository) error {
+	be := &Backend{repo}
 	be.StartStats()
 
 	s := smtp.NewServer(be)
-	s.Addr = ":1025"
-	s.Domain = "localhost"
-	s.ReadTimeout = 10 * time.Second
-	s.WriteTimeout = 10 * time.Second
-	s.MaxMessageBytes = 1024 * 1024
-	s.MaxRecipients = 50
-	s.AllowInsecureAuth = true
+	s.Addr = settings.Port
+	s.Domain = settings.Host
+	s.ReadTimeout = settings.ReadTimeout
+	s.WriteTimeout = settings.WriteTimeout
+	s.MaxMessageBytes = settings.MaxMessageBytes
+	s.MaxRecipients = settings.MaxRecipients
+	s.AllowInsecureAuth = settings.AllowInsecureAuth
 
 	log.Println("Starting server at", s.Addr)
 	if err := s.ListenAndServe(); err != nil {
