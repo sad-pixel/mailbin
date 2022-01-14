@@ -13,6 +13,7 @@ type Backend struct {
 	Repository *repository.EmailRepository
 }
 
+// Starts a goroutine that prints statistics every 15 seconds
 func (bkd *Backend) StartStats() {
 	go func(rp *repository.EmailRepository) {
 		for {
@@ -33,10 +34,12 @@ func (bkd *Backend) StartStats() {
 	}(bkd.Repository)
 }
 
+// Creates a new session on SMTP Login. Can authenticate user in the future if needed.
 func (bkd *Backend) Login(state *smtp.ConnectionState, username, password string) (smtp.Session, error) {
 	return &Session{bkd.Repository}, nil
 }
 
+// Creates a new session for SMTP Anonymous Login
 func (bkd *Backend) AnonymousLogin(state *smtp.ConnectionState) (smtp.Session, error) {
 	return &Session{bkd.Repository}, nil
 }

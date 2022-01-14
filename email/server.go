@@ -8,7 +8,8 @@ import (
 	"github.com/sad-pixel/mailbin/repository"
 )
 
-type EmailSettings struct {
+// Settings holds the configuration for the SMTP server
+type Settings struct {
 	Port              string
 	Host              string
 	ReadTimeout       time.Duration
@@ -18,7 +19,8 @@ type EmailSettings struct {
 	AllowInsecureAuth bool
 }
 
-func ListenAndServe(settings *EmailSettings, repo *repository.EmailRepository) error {
+// Starts the SMTP server
+func ListenAndServe(settings *Settings, repo *repository.EmailRepository) error {
 	be := &Backend{repo}
 	be.StartStats()
 

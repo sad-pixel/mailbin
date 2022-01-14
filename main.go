@@ -9,7 +9,7 @@ import (
 
 func main() {
 	emailRepository := &repository.EmailRepository{}
-	emailSettings := &email.EmailSettings{
+	emailSettings := &email.Settings{
 		Port:              ":1025",
 		Host:              "localhost",
 		ReadTimeout:       10 * time.Second,
