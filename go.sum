@@ -6,3 +6,5 @@ github.com/emersion/go-smtp v0.15.0 h1:3+hMGMGrqP/lqd7qoxZc1hTU8LY8gHV9RFGWlqSDm
 github.com/emersion/go-smtp v0.15.0/go.mod h1:qm27SGYgoIPRot6ubfQ/GpiPy/g3PaZAVRxiO/sDUgQ=
 github.com/go-chi/chi/v5 v5.0.7 h1:rDTPXLDHGATaeHvVlLcR4Qe0zftYethFucbjVQ1PxU8=
 github.com/go-chi/chi/v5 v5.0.7/go.mod h1:DslCQbL2OYiznFReuXYUmQ2hGd1aDpCnlMNITLSKoi8=
+github.com/gust1n/go-render v0.0.0-20140901072858-0ff758e26fe7 h1:lMLkorvHZMFlimRQ/UV1nEOHS4Rw0Vh+bU2GdvSleps=
+github.com/gust1n/go-render v0.0.0-20140901072858-0ff758e26fe7/go.mod h1:5ma2UZxjGpDmXq/107tdHY5QDQoi8ULbbC1VgdCkDew=

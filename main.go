@@ -1,10 +1,12 @@
 package main
 
 import (
+	"log"
 	"time"
 
 	"github.com/sad-pixel/mailbin/email"
 	"github.com/sad-pixel/mailbin/repository"
+	"github.com/sad-pixel/mailbin/web"
 )
 
 func main() {
@@ -18,5 +20,20 @@ func main() {
 		MaxRecipients:     50,
 		AllowInsecureAuth: true,
 	}
-	email.ListenAndServe(emailSettings, emailRepository)
+	go email.ListenAndServe(emailSettings, emailRepository)
+
+	webSettings := &web.WebSettings{
+		Port: ":1026",
+	}
+
+	webHandlers, err := web.NewHandlers(emailRepository)
+	if err != nil {
+		log.Fatalln("could not setup web handlers: " + err.Error())
+	}
+
+	router := web.NewRouter()
+	web.SetupRoutes(router, webHandlers)
+	if err := web.ListenAndServe(webSettings, router); err != nil {
+		log.Fatalln("could not start web server: " + err.Error())
+	}
 }
