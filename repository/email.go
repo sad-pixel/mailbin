@@ -13,6 +13,25 @@ import (
 type Message struct {
 	Email       parsemail.Email
 	Attachments []MessageAttachment
+	isRead      bool
+}
+
+// NewMessage creates a new Message from a parsemail.Email
+func NewMessage(email parsemail.Email) Message {
+	return Message{
+		Email:  email,
+		isRead: false,
+	}
+}
+
+// IsRead returns if the email has been read by the user
+func (m *Message) IsRead() bool {
+	return m.isRead
+}
+
+// MarkRead marks the message as read
+func (m *Message) MarkRead() {
+	m.isRead = true
 }
 
 // MessageAttachment represents an attachment, along with the file data
@@ -25,7 +44,7 @@ type MessageAttachment struct {
 // EmailRepository provides mechanisms for storing and retrieving
 // email messages
 type EmailRepository struct {
-	mu       sync.Mutex
+	mu       sync.RWMutex
 	Messages []Message
 }
 
@@ -37,9 +56,7 @@ func (e *EmailRepository) Store(r io.Reader) error {
 		return fmt.Errorf("could not parse email: %v", err)
 	}
 
-	message := Message{
-		Email: mail,
-	}
+	message := NewMessage(mail)
 
 	for _, attachment := range message.Email.Attachments {
 		a := MessageAttachment{
@@ -64,21 +81,34 @@ func (e *EmailRepository) Store(r io.Reader) error {
 }
 
 // GetAll returns all emails in the repository
-func (e *EmailRepository) GetAll() *[]Message {
-	e.mu.Lock()
-	defer e.mu.Unlock()
+func (e *EmailRepository) GetAll() []Message {
+	e.mu.RLock()
+	defer e.mu.RUnlock()
 
-	return &e.Messages
+	return e.Messages
 }
 
 // GetOne returns one email by index from the repository
-func (e *EmailRepository) GetOne(index int) (*Message, error) {
+func (e *EmailRepository) GetOne(index int) (Message, error) {
+	e.mu.RLock()
+	defer e.mu.RUnlock()
+
+	if index > len(e.Messages) || index < 0 {
+		return Message{}, fmt.Errorf("email index out of bounds")
+	}
+
+	return e.Messages[index], nil
+}
+
+// MarkRead marks an email in the repository as read.
+func (e *EmailRepository) MarkRead(index int) error {
 	e.mu.Lock()
 	defer e.mu.Unlock()
 
 	if index > len(e.Messages) || index < 0 {
-		return nil, fmt.Errorf("email index out of bounds")
+		return fmt.Errorf("email index out of bounds")
 	}
 
-	return &e.Messages[index], nil
+	e.Messages[index].MarkRead()
+	return nil
 }
