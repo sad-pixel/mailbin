@@ -3,6 +3,7 @@ package web
 import (
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 
 	"github.com/gust1n/go-render/render"
@@ -32,5 +33,11 @@ func NewHandlers(repo *repository.EmailRepository) (*Handlers, error) {
 }
 
 func (h *Handlers) GetIndex(w http.ResponseWriter, r *http.Request) {
-	h.RenderTemplate(w, "index.html", h)
+	messages := ToDisplayEmails(h.repository.GetAll())
+	err := h.RenderTemplate(w, "index.html", map[string]interface{}{
+		"messages": messages,
+	})
+	if err != nil {
+		log.Println(err)
+	}
 }

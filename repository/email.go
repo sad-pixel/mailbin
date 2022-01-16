@@ -11,6 +11,7 @@ import (
 // Message represents an e-mail message along with all data
 // and attachments
 type Message struct {
+	Id          int
 	Email       parsemail.Email
 	Attachments []MessageAttachment
 	isRead      bool
@@ -76,6 +77,7 @@ func (e *EmailRepository) Store(r io.Reader) error {
 	e.mu.Lock()
 	defer e.mu.Unlock()
 
+	message.Id = len(e.Messages) + 1
 	e.Messages = append(e.Messages, message)
 	return nil
 }

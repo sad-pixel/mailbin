@@ -1,2 +1,4 @@
 mailbin
 mailbin.exe
+tmp/
+tmp/*
