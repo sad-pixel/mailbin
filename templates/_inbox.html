@@ -1,0 +1,21 @@
+<div class="panel">
+    <p class="panel-heading">
+        Inbox
+    </p>
+    {{ if .messages }}
+    {{ range .messages }}
+    <div class="panel-block">
+        {{ template "_sidebar-email.html" . }}
+    </div>
+    {{ end }}
+    <div class="panel-block">
+        <a class="button is-danger is-outlined is-fullwidth">
+          Delete All Emails
+        </a>
+    </div>
+    {{ else }}
+    <div class="panel-block">
+        <p>There are no messages yet.</p>
+    </div>
+    {{ end }}
+</div>

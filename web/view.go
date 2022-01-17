@@ -17,7 +17,7 @@ type DisplayEmail struct {
 }
 
 func FormatDate(t *time.Time) string {
-	return t.Format("Mon Jan 2 2006, 15:04:05 MST")
+	return t.Format("Jan 2, 15:04")
 }
 
 func FormatAddresses(addrs []*mail.Address) string {
