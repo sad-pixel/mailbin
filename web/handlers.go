@@ -10,10 +10,6 @@ import (
 	"github.com/sad-pixel/mailbin/repository"
 )
 
-type WebSettings struct {
-	Port string
-}
-
 type Handlers struct {
 	templates  map[string]*template.Template
 	repository *repository.EmailRepository
