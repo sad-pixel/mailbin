@@ -13,7 +13,7 @@ import (
 type Message struct {
 	Id          int
 	Email       parsemail.Email
-	Attachments []MessageAttachment
+	Attachments []*MessageAttachment
 	isRead      bool
 }
 
@@ -40,6 +40,11 @@ func (m *Message) MarkRead() {
 type MessageAttachment struct {
 	Attachment parsemail.Attachment
 	File       []byte
+}
+
+// Creates a string representation of a MessageAttachment
+func (ma *MessageAttachment) String() string {
+	return fmt.Sprintf("%s (%s)", ma.Attachment.Filename, ma.Attachment.ContentType)
 }
 
 // EmailRepository provides mechanisms for storing and retrieving
@@ -70,7 +75,7 @@ func (e *EmailRepository) Store(r io.Reader) error {
 		}
 
 		a.File = attachmentBytes
-		message.Attachments = append(message.Attachments, a)
+		message.Attachments = append(message.Attachments, &a)
 	}
 
 	// acquire lock only after other processing is done
